@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حرب الفواكه والخضروات</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a5d1a, #8bc34a);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      direction: rtl;
+      color: #fff;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      text-align: center;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .developer-header {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: #ffcc00;
+      text-shadow: 0 0 5px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    h1 {
+      font-size: 2.3rem;
+      margin-bottom: 20px;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 4px;
+      background: linear-gradient(to right, #ff9a9e, #fad0c4);
+      border-radius: 2px;
+    }
+    
+    .screen {
+      display: none;
+      padding: 20px 0;
+    }
+    
+    .screen.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .input-group {
+      margin: 20px 0;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    input {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.3);
+      border-color: #ffcc00;
+    }
+    
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .btn {
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      color: #333;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      margin: 10px 0;
+      display: inline-block;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+    }
+    
+    .player-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .fruits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    .fruit-card {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 15px 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .fruit-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .fruit-card:active {
+      transform: scale(0.95);
+    }
+    
+    .fruit-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .fruit-name {
+      font-size: 0.9rem;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 3px 8px;
+      border-radius: 10px;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .player-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px 15px;
+      border-radius: 10px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .fruit-card.selected .player-name {
+      opacity: 1;
+    }
+    
+    .fruit-card.selected .fruit-icon {
+      opacity: 0.2;
+    }
+    
+    .fruit-card.selected .fruit-name {
+      opacity: 0.2;
+    }
+    
+    .winner-screen {
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 20px;
+      margin: 20px 0;
+    }
+    
+    .winner-icon {
+      font-size: 5rem;
+      margin: 20px 0;
+      color: #ffcc00;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .winner-name {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #ffcc00;
+      text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+    }
+    
+    .status-bar {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      border-radius: 50px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    
+    .instructions {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 15px;
+      margin: 20px 0;
+      font-size: 0.9rem;
+      border-left: 4px solid #ffcc00;
+    }
+    
+    .developer-footer {
+      margin-top: 20px;
+      padding: 10px;
+      color: #ffcc00;
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .smelly-vegetable {
+      animation: stink 3s infinite;
+      position: relative;
+    }
+    
+    @keyframes stink {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.1) rotate(5deg); }
+      50% { transform: scale(1.2) rotate(-5deg); }
+      75% { transform: scale(1.1) rotate(5deg); }
+      100% { transform: scale(1); }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .developer-header {
+        font-size: 1.2rem;
+      }
+      
+      .btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+      }
+      
+      .fruit-icon {
+        font-size: 2rem;
+      }
+      
+      .fruits-grid {
+        gap: 15px;
+      }
+      
+      .fruit-card {
+        padding: 12px 8px;
+      }
+      
+      .fruit-name {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="developer-header">
+      <i class="fas fa-code"></i>
+      العاب
+      𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃 
+    </div>
+    
+    <h1>🍊 حرب الفواكه والخضروات 🧅</h1>
+    
+    <!-- شاشة إدخال عدد اللاعبين -->
+    <div id="playerCountScreen" class="screen active">
+      <div class="input-group">
+        <label for="playerCount">عدد اللاعبين:</label>
+        <input type="number" id="playerCount" min="2" max="15" placeholder="أدخل عدد اللاعبين (2-15)" value="4">
+      </div>
+      <button class="btn" onclick="nextToNames()">التالي <i class="fas fa-arrow-left"></i></button>
+      
+      <div class="instructions">
+        <p><i class="fas fa-info-circle"></i> قم بإدخال عدد اللاعبين ثم انقر على التالي</p>
+        <p><i class="fas fa-exclamation-triangle"></i> احذر من الخضروات ذات الرائحة النتنة!</p>
+      </div>
+    </div>
+    
+    <!-- شاشة إدخال أسماء اللاعبين -->
+    <div id="playerNamesScreen" class="screen">
+      <h2>أدخل أسماء اللاعبين</h2>
+      <div id="playerInputs" class="player-inputs">
+        <!-- سيتم إضافة حقول الإدخال هنا بواسطة الجافاسكربت -->
+      </div>
+      <button class="btn" onclick="startGame()">بدء اللعبة <i class="fas fa-play"></i></button>
+      <button class="btn" onclick="backToCount()" style="background: rgba(255,255,255,0.2); color: #fff;">رجوع <i class="fas fa-undo"></i></button>
+    </div>
+    
+    <!-- شاشة اللعبة الرئيسية -->
+    <div id="gameScreen" class="screen">
+      <div class="status-bar">
+        <span id="remainingPlayers">اللاعبين المتبقيين: <span id="remainingCount">0</span></span>
+      </div>
+      
+      <div id="fruitsGrid" class="fruits-grid">
+        <!-- سيتم إضافة بطاقات الفواكه هنا بواسطة الجافاسكربت -->
+      </div>
+      
+      <div class="instructions">
+        <p><i class="fas fa-mouse-pointer"></i> اضغط على أي فاكهة أو خضار لإستبعاد اللاعب المرتبط بها</p>
+        <p><i class="fas fa-skull"></i> الخضروات النتنة ستجعل اللعبة أكثر إثارة!</p>
+      </div>
+    </div>
+    
+    <!-- شاشة الفائز -->
+    <div id="winnerScreen" class="screen">
+      <div class="winner-screen">
+        <h2>الفائز في حرب الفواكه والخضروات!</h2>
+        <div class="winner-icon">🏆</div>
+        <div class="winner-name" id="winnerName"></div>
+        <p>مبروك! لقد فاز باللعبة وتجنب الخضروات النتنة</p>
+      </div>
+      <button class="btn" onclick="restartGame()">العب مرة أخرى <i class="fas fa-redo"></i></button>
+    </div>
+    
+    <div class="developer-footer">
+      <i class="fas fa-laptop-code"></i>
+      𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃 تصميم وتطوير وبرمجة
+    </div>
+  </div>
+
+  <script>
+    // قائمة الفواكه والخضروات المتاحة مع أسمائها
+    const fruits = [
+      { icon: "🍎", name: "تفاح" },
+      { icon: "🍐", name: "كمثرى" },
+      { icon: "🍊", name: "برتقال" },
+      { icon: "🍋", name: "ليمون" },
+      { icon: "🍌", name: "موز" },
+      { icon: "🍉", name: "بطيخ" },
+      { icon: "🍇", name: "عنب" },
+      { icon: "🍓", name: "فراولة" },
+      { icon: "🫐", name: "توت أزرق" },
+      { icon: "🍈", name: "شمام" },
+      { icon: "🍒", name: "كرز" },
+      { icon: "🍑", name: "خوخ" },
+      { icon: "🥭", name: "مانجو" },
+      { icon: "🍍", name: "أناناس" },
+      { icon: "🥥", name: "جوز الهند" },
+      { icon: "🥝", name: "كيوي" },
+      { icon: "🍅", name: "طماطم" },
+      { icon: "🍆", name: "باذنجان" },
+      { icon: "🥑", name: "أفوكادو" },
+      { icon: "🥦", name: "بروكلي" },
+      { icon: "🥬", name: "خضار ورقية" },
+      { icon: "🥒", name: "خيار" },
+      { icon: "🌶️", name: "فلفل حار" },
+      { icon: "🫑", name: "فلفل حلو" },
+      { icon: "🌽", name: "ذرة" },
+      { icon: "🥕", name: "جزر" },
+      { icon: "🫒", name: "زيتون" },
+      
+      // خضروات مقرفة وذات رائحة نتنة
+      { icon: "🧄", name: "ثوم", smelly: true },
+      { icon: "🧅", name: "بصل", smelly: true },
+      { icon: "🥔", name: "بطاطس فاسدة", smelly: true },
+      { icon: "🦠", name: "عفن", smelly: true },
+      { icon: "🧀", name: "جبنة عفنة", smelly: true },
+      { icon: "🥦", name: "بروكلي فاسد", smelly: true },
+      { icon: "🥬", name: "خس متعفن", smelly: true },
+      { icon: "🍄", name: "فطر نتن", smelly: true },
+      { icon: "🥒", name: "خيار فاسد", smelly: true },
+      { icon: "🌶️", name: "فلفل عفن", smelly: true },
+      { icon: "🫒", name: "زيتون متعفن", smelly: true }
+    ];
+    
+    // متغيرات اللعبة
+    let players = [];
+    let remainingPlayers = 0;
+    
+    // الانتقال إلى شاشة أسماء اللاعبين
+    function nextToNames() {
+      const playerCount = parseInt(document.getElementById('playerCount').value);
+      
+      if (playerCount < 2 || playerCount > 15) {
+        alert("الرجاء إدخال عدد لاعبين بين 2 و 15");
+        return;
+      }
+      
+      document.getElementById('playerCountScreen').classList.remove('active');
+      document.getElementById('playerNamesScreen').classList.add('active');
+      
+      const playerInputs = document.getElementById('playerInputs');
+      playerInputs.innerHTML = '';
+      
+      for (let i = 1; i <= playerCount; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `اسم اللاعب ${i}`;
+        input.dataset.index = i;
+        playerInputs.appendChild(input);
+      }
+    }
+    
+    // العودة إلى شاشة عدد اللاعبين
+    function backToCount() {
+      document.getElementById('playerNamesScreen').classList.remove('active');
+      document.getElementById('playerCountScreen').classList.add('active');
+    }
+    
+    // بدء اللعبة
+    function startGame() {
+      const nameInputs = document.querySelectorAll('#playerInputs input');
+      players = [];
+      
+      // جمع أسماء اللاعبين
+      nameInputs.forEach((input, index) => {
+        const name = input.value.trim() || `اللاعب ${index + 1}`;
+        players.push({
+          name: name,
+          fruit: null,
+          isActive: true
+        });
+      });
+      
+      // اختيار فواكه عشوائية لكل لاعب
+      const shuffledFruits = [...fruits].sort(() => Math.random() - 0.5).slice(0, players.length);
+      
+      players.forEach((player, index) => {
+        player.fruit = shuffledFruits[index];
+      });
+      
+      // تحديث شاشة اللعبة
+      document.getElementById('playerNamesScreen').classList.remove('active');
+      document.getElementById('gameScreen').classList.add('active');
+      
+      renderFruits();
+      updateRemainingPlayers();
+    }
+    
+    // عرض الفواكه في الشاشة الرئيسية
+    function renderFruits() {
+      const fruitsGrid = document.getElementById('fruitsGrid');
+      fruitsGrid.innerHTML = '';
+      
+      // خلط اللاعبين لعرضهم بشكل عشوائي
+      const shuffledPlayers = [...players].sort(() => Math.random() - 0.5);
+      
+      shuffledPlayers.forEach(player => {
+        if (player.isActive) {
+          const fruitCard = document.createElement('div');
+          fruitCard.className = 'fruit-card';
+          if (player.fruit.smelly) {
+            fruitCard.classList.add('smelly-vegetable');
+          }
+          
+          fruitCard.innerHTML = `
+            <div class="fruit-icon">${player.fruit.icon}</div>
+            <div class="fruit-name">${player.fruit.name}</div>
+            <div class="player-name">${player.name}</div>
+          `;
+          fruitCard.dataset.player = player.name;
+          
+          fruitCard.addEventListener('click', () => {
+            eliminatePlayer(player, fruitCard);
+          });
+          
+          fruitsGrid.appendChild(fruitCard);
+        }
+      });
+    }
+    
+    // إقصاء لاعب
+    function eliminatePlayer(player, card) {
+      player.isActive = false;
+      card.classList.add('selected');
+      
+      // رسالة خاصة للخضروات النتنة
+      const message = player.fruit.smelly 
+        ? `يا للرائحة! تم استبعاد اللاعب: ${player.name} بسبب ${player.fruit.name} النتنة 🤢` 
+        : `تم استبعاد اللاعب: ${player.name} بسبب ${player.fruit.name}`;
+      
+      // إظهار رسالة باستبعاد اللاعب
+      setTimeout(() => {
+        alert(message);
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.8)';
+        
+        setTimeout(() => {
+          card.remove();
+          updateRemainingPlayers();
+          
+          // التحقق إذا بقي لاعب واحد فقط
+          if (remainingPlayers === 1) {
+            showWinner();
+          }
+        }, 300);
+      }, 1000);
+    }
+    
+    // تحديث عدد اللاعبين المتبقيين
+    function updateRemainingPlayers() {
+      remainingPlayers = players.filter(player => player.isActive).length;
+      document.getElementById('remainingCount').textContent = remainingPlayers;
+    }
+    
+    // عرض شاشة الفائز
+    function showWinner() {
+      const winner = players.find(player => player.isActive);
+      
+      setTimeout(() => {
+        document.getElementById('gameScreen').classList.remove('active');
+        document.getElementById('winnerScreen').classList.add('active');
+        document.getElementById('winnerName').textContent = winner.name;
+      }, 1000);
+    }
+    
+    // إعادة بدء اللعبة
+    function restartGame() {
+      document.getElementById('winnerScreen').classList.remove('active');
+      document.getElementById('playerCountScreen').classList.add('active');
+      players = [];
+    }
+    
+    // تهيئة اللعبة
+    document.addEventListener('DOMContentLoaded', () => {
+      // إضافة أيقونة حرب الفواكه إلى العنوان
+      document.title = '🍓 ' + document.title + ' 🧄';
+    });
+  </script>
+</body>
+</html>
